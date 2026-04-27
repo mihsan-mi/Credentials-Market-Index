@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credence Exchange // Speculative Asset Board</title>
+    <link rel="stylesheet" href="style_light.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="exchange-frame">
+        
+        <!-- 1. HUB HEADER (EXPANDED GLOBAL INDICATORS) -->
+        <header class="hud-header">
+            <div class="system-title hud-mono cyan-glow">
+                CREDENCE_EXCHANGE (CRX)
+            </div>
+            
+            <!-- Deluxe Global Dashboard Indices -->
+            <div class="global-indices hud-mono" style="font-size: 0.65rem; display: flex; gap: 15px; color: var(--text-muted); align-items: center; margin-left: 30px;">
+                <span>AMI_INDEX: <span class="cyan-glow" id="ami-val">1,422.50 (+1.8%)</span></span>
+                <span style="border-left: 1px solid rgba(255,255,255,0.08); padding-left: 15px;">TOP_SECTOR: <span class="cyan-glow" id="top-sector">TECHNOLOGY</span></span>
+                <span style="border-left: 1px solid rgba(255,255,255,0.08); padding-left: 15px;">MOST_VOLATILE: <span class="amber-glow" id="volatile-asset">CONFLICT-X</span></span>
+            </div>
+
+            <!-- DUAL FILTERS BAR -->
+            <div class="header-filters hud-mono" style="display: flex; gap: 12px; align-items: center; margin-left: auto; margin-right: 20px;">
+                <select id="news-state-filter" class="hud-select">
+                    <option value="all">ALL_ASSETS</option>
+                    <option value="upcoming">UPCOMING_NEWS</option>
+                    <option value="live">LIVE_MARKET</option>
+                </select>
+                <select id="timeframe-filter" class="hud-select">
+                    <option value="24h">24H</option>
+                    <option value="1w">1W_INDEX</option>
+                    <option value="1m">1M_INDEX</option>
+                    <option value="1y">1Y_INDEX</option>
+                </select>
+            </div>
+
+            <div class="node-status hud-mono">
+                <div class="status-dot"></div>
+                NODE_OK
+            </div>
+        </header>
+
+        <!-- 2. LIVE TICKER BANNER -->
+        <div class="ticker-wrap hud-mono">
+            <div class="ticker-track" id="ticker-track">
+                <!-- Javascript will populate ticker items -->
+                <div class="ticker-item">LOADING_FEED...</div>
+            </div>
+        </div>
+
+        <!-- 3. MAIN DASHBOARD GRID -->
+        <main class="dashboard-grid">
+            
+            <!-- PANEL A: LIVE PERFORMANCE CHART -->
+            <section class="hud-panel chart-panel">
+                <div class="panel-header">
+                    <span class="panel-title hud-mono">ASSET_PERFORMANCE // <span id="active-asset-name">_SELECT_ASSET</span></span>
+                    <span class="panel-controls hud-mono" style="font-size: 0.6rem; color: var(--verify-cyan);">LIVE_STREAM</span>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-wrapper">
+                        <svg id="live-chart" width="100%" height="100%" viewBox="0 0 400 200" style="overflow: visible;">
+                            <defs>
+                                <linearGradient id="glow-grad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="var(--verify-cyan)" stop-opacity="0.15"/>
+                                    <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Grid Lines will be injected here -->
+                            <g id="chart-grid"></g>
+                            <!-- Path for Chart Fill -->
+                            <path id="chart-area-fill" fill="url(#glow-grad)"></path>
+                            <!-- Path for Chart Line -->
+                            <path id="chart-main-line" fill="none" stroke="var(--verify-cyan)" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL B: ORDER BOOK (Speculation Ledger) -->
+            <section class="hud-panel order-panel">
+                <div class="panel-header">
+                    <span class="panel-title hud-mono">SPECULATION_LEDGER // LIQUIDITY</span>
+                </div>
+                <div class="panel-body">
+                    <div class="ledger-summary" style="margin-bottom: 12px; display: flex; justify-content: space-between; font-size: 0.8rem;">
+                        <div>Volume: <span class="cyan-glow" id="vol-text">14.2K AP</span></div>
+                        <div>Spread: <span style="color: var(--aware-amber);">0.02%</span></div>
+                    </div>
+                    
+                    <table class="table-condensed hud-mono">
+                        <thead>
+                            <tr>
+                                <th>PRICE (AP)</th>
+                                <th>VOLUME</th>
+                                <th>ORDER_ID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-book-body">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PANEL C: VERIFIED ASSET POOL -->
+            <section class="hud-panel pool-panel">
+                <div class="panel-header">
+                    <span class="panel-title hud-mono">APPROVED_KNOWLEDGE_ASSETS</span>
+                    <button class="hud-mono" style="background:none; border: 1px solid var(--border-dim); color: var(--text-primary); font-size: 0.6rem; padding: 2px 6px; cursor: pointer;">REFRESH_POOL</button>
+                </div>
+                <div class="panel-body" style="overflow-y: auto;">
+                    <div class="pool-grid" id="pool-grid">
+                        <!-- Dynamic Cards -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 3B. ALTERNATIVE BOX GRAPH VIEW (Hidden by Default) -->
+        <main class="dashboard-box-graph" id="box-graph-view" style="display: none;">
+            <div class="hud-panel box-panel">
+                <div class="panel-header">
+                    <span class="panel-title hud-mono">KNOWLEDGE_ASSET_ALLOCATION // VOLUME_WEIGHTS</span>
+                </div>
+                <div class="panel-body">
+                    <!-- SVG supporting absolute scalar geometry overlays -->
+                    <svg id="treemap-svg" width="100%" height="100%" style="overflow: visible;"></svg>
+                </div>
+            </div>
+        </main>
+
+        <!-- DELUXE FLOATING TOOLTIP OVERLAY -->
+        <div id="treemap-tooltip" style="position: absolute; display: none; background: rgba(10, 14, 23, 0.88); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; backdrop-filter: blur(16px); font-size: 0.72rem; color: #fff; z-index: 2000; pointer-events: none; box-shadow: 0 10px 40px rgba(0,0,0,0.4); line-height: 1.4;"></div>
+
+        <!-- 5. HEAT MAP VIEW BUTTON -->
+        <div class="glass-btn view-toggle" id="view-toggle-btn">Heat Map View</div>
+
+        <!-- 4. PRETTY THEME TOGGLE SWITCH -->
+        <label class="theme-switch" id="theme-toggle">
+            <input type="checkbox" id="theme-checkbox">
+            <span class="switch-slider"></span>
+        </label>
+
+    </div>
+
+    <!-- Logic Script -->
+    <script src="app.js?v=2"></script>
+</body>
+</html>
